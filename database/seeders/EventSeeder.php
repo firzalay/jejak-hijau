@@ -25,10 +25,10 @@ class EventSeeder extends Seeder
         $ongoingEvent = Event::factory()->ongoing()->create([
             'name' => 'GreenRun Surabaya Eco-Sprint',
             'location' => 'Taman Bungkul, Surabaya',
-            'user_id' => $organizer->id,
+            'organizer_id' => $organizer->id,
             'total_checkpoints' => 8,
             'description' => 'Aksi lari peduli sampah plastik di Surabaya. Kumpulkan poin di setiap checkpoint dengan melakukan aksi pembersihan lingkungan.',
-            'banner_image' => 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?auto=format&fit=crop&q=80&w=800',
+            'banner' => 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?auto=format&fit=crop&q=80&w=800',
             'total_rewards' => 'Rp 15.000.000',
             'max_points' => 800,
         ]);
@@ -37,10 +37,10 @@ class EventSeeder extends Seeder
         $upcomingEvent = Event::factory()->upcoming()->create([
             'name' => 'GreenRun Jakarta Forest Run',
             'location' => 'Hutan Kota GBK, Jakarta',
-            'user_id' => $organizer->id,
+            'organizer_id' => $organizer->id,
             'total_checkpoints' => 10,
             'description' => 'Event lari peduli emisi karbon di pusat ibu kota. Bersama kurangi polusi udara Jakarta dengan menanam pohon!',
-            'banner_image' => 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&q=80&w=800',
+            'banner' => 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&q=80&w=800',
             'total_rewards' => 'Rp 25.000.000',
             'max_points' => 1000,
         ]);
@@ -49,10 +49,10 @@ class EventSeeder extends Seeder
         $finishedEvent = Event::factory()->finished()->create([
             'name' => 'GreenRun Bali Coastal Clean Run',
             'location' => 'Pantai Kuta, Bali',
-            'user_id' => $organizer->id,
+            'organizer_id' => $organizer->id,
             'total_checkpoints' => 6,
             'description' => 'Aksi nyata menjaga kelestarian laut dan pantai Bali dari sampah plastik sekali pakai.',
-            'banner_image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800',
+            'banner' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800',
             'total_rewards' => 'Rp 10.000.000',
             'max_points' => 600,
         ]);

@@ -18,7 +18,7 @@
                     Belum ada event yang dibuat. Mulai buat event pertama Anda untuk mengajak peserta berpartisipasi dalam GreenRun.
                 </p>
 
-                <a href="{{ route('organizer.placeholder', 'create-event') }}" id="btn-buat-event-empty" class="btn-primary">
+                <a href="{{ route('organizer.events.create') }}" id="btn-buat-event-empty" class="btn-primary">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                     </svg>
@@ -153,7 +153,7 @@
                     <section class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4 animate-fade-in-up animate-delay-200">
                         <div class="flex items-center justify-between border-b pb-3 border-gray-100">
                             <h3 class="font-bold text-base text-gray-900">Daftar Event</h3>
-                            <a href="{{ route('organizer.placeholder', 'create-event') }}" class="text-xs font-semibold text-emerald hover:underline">
+                            <a href="{{ route('organizer.events.create') }}" class="text-xs font-semibold text-emerald hover:underline">
                                 + Buat Baru
                             </a>
                         </div>
@@ -163,7 +163,7 @@
                                 @php
                                     $status = $event->status;
                                 @endphp
-                                <div class="py-3.5 flex items-center justify-between gap-4 group">
+                                <a href="{{ route('organizer.events.show', $event->id) }}" class="py-3.5 flex items-center justify-between gap-4 group hover:bg-gray-50/50 -mx-6 px-6 transition-colors">
                                     <div class="min-w-0 flex-1 space-y-1">
                                         <div class="flex items-center gap-2">
                                             <h4 class="font-bold text-sm text-gray-800 truncate">{{ $event->name }}</h4>
@@ -176,6 +176,10 @@
                                             @elseif ($status === 'Upcoming')
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-600">
                                                     Upcoming
+                                                </span>
+                                            @elseif ($status === 'Draft')
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/10 text-blue-600">
+                                                    Draft
                                                 </span>
                                             @else
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-500/10 text-gray-600">
@@ -198,7 +202,7 @@
                                             Detail →
                                         </span>
                                     </div>
-                                </div>
+                                </a>
                             @endforeach
                         </div>
                     </section>
@@ -213,7 +217,7 @@
 
                         <div class="grid grid-cols-2 gap-3">
                             {{-- Buat Event --}}
-                            <a href="{{ route('organizer.placeholder', 'create-event') }}" 
+                            <a href="{{ route('organizer.events.create') }}" 
                                id="btn-buat-event-action"
                                class="p-3.5 rounded-xl border border-gray-100 hover:border-emerald/30 hover:bg-emerald/5 transition-all text-center flex flex-col items-center group">
                                 <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-2.5 bg-forest/5 text-forest group-hover:bg-emerald/10 group-hover:text-emerald transition-all">

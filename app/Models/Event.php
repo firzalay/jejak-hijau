@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
-#[Fillable(['name', 'location', 'event_date', 'total_checkpoints', 'is_active', 'banner_image', 'description', 'total_rewards', 'max_points', 'user_id'])]
+#[Fillable(['name', 'location', 'start_date', 'end_date', 'total_checkpoints', 'is_active', 'banner', 'description', 'total_rewards', 'max_points', 'organizer_id', 'max_participants', 'status', 'user_id'])]
 class Event extends Model
 {
     /** @use HasFactory<EventFactory> */
@@ -30,7 +31,8 @@ class Event extends Model
     protected function casts(): array
     {
         return [
-            'event_date' => 'date',
+            'start_date' => 'date',
+            'end_date' => 'date',
             'is_active' => 'boolean',
         ];
     }
@@ -57,26 +59,69 @@ class Event extends Model
     }
 
     /**
-     * Get the dynamic event status based on event_date.
+     * Get the dynamic event status based on database status column.
+     * Maps to standard strings for backward compatibility with existing views.
      */
     public function getStatusAttribute(): string
     {
-        if (! $this->event_date) {
-            return 'Upcoming';
-        }
+        $status = $this->attributes['status'] ?? 'draft';
 
-        $today = now()->startOfDay();
-        $eventDate = $this->event_date->startOfDay();
+        return match ($status) {
+            'draft' => 'Draft',
+            'published' => 'Upcoming',
+            'ongoing' => 'Ongoing',
+            'finished' => 'Finished',
+            default => ucfirst($status),
+        };
+    }
 
-        if ($eventDate->isFuture()) {
-            return 'Upcoming';
-        }
+    /**
+     * Check if the event is draft.
+     */
+    public function isDraft(): bool
+    {
+        return ($this->attributes['status'] ?? 'draft') === 'draft';
+    }
 
-        if ($eventDate->isToday()) {
-            return 'Ongoing';
-        }
+    /**
+     * Check if the event is published.
+     */
+    public function isPublished(): bool
+    {
+        return ($this->attributes['status'] ?? 'draft') === 'published';
+    }
 
-        return 'Finished';
+    /**
+     * Accessor for backward compatibility with event_date.
+     */
+    public function getEventDateAttribute(): ?Carbon
+    {
+        return $this->start_date;
+    }
+
+    /**
+     * Accessor for backward compatibility with banner_image.
+     */
+    public function getBannerImageAttribute(): ?string
+    {
+        return $this->banner;
+    }
+
+    /**
+     * Accessor for backward compatibility with user_id.
+     */
+    public function getUserIdAttribute(): ?int
+    {
+        return $this->organizer_id;
+    }
+
+    /**
+     * Mutator for backward compatibility with user_id.
+     */
+    public function setUserIdAttribute($value): void
+    {
+        $this->attributes['organizer_id'] = $value;
+        unset($this->attributes['user_id']);
     }
 
     /**
@@ -84,7 +129,7 @@ class Event extends Model
      */
     public function organizer(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'organizer_id');
     }
 
     /**
