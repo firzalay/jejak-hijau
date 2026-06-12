@@ -26,6 +26,7 @@ class CheckpointFactory extends Factory
             'sequence' => fake()->numberBetween(1, 10),
             'points' => fake()->randomElement([50, 100, 150]),
             'status' => 'active',
+            'qr_token' => null,
         ];
     }
 }

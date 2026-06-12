@@ -6,6 +6,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrganizerCheckpointController;
 use App\Http\Controllers\OrganizerDashboardController;
 use App\Http\Controllers\OrganizerEventController;
+use App\Http\Controllers\OrganizerQrController;
 use App\Http\Controllers\ParticipantEventController;
 use Illuminate\Support\Facades\Route;
 
@@ -51,6 +52,13 @@ Route::middleware(['auth', 'role:organizer'])->prefix('organizer')->name('organi
     Route::get('checkpoints/{id}/edit', [OrganizerCheckpointController::class, 'edit'])->name('checkpoints.edit');
     Route::put('checkpoints/{id}', [OrganizerCheckpointController::class, 'update'])->name('checkpoints.update');
     Route::delete('checkpoints/{id}', [OrganizerCheckpointController::class, 'destroy'])->name('checkpoints.destroy');
+
+    // QR Code Management routes
+    Route::post('checkpoints/{id}/generate-qr', [OrganizerQrController::class, 'generate'])->name('checkpoints.generate-qr');
+    Route::post('checkpoints/{id}/regenerate-qr', [OrganizerQrController::class, 'regenerate'])->name('checkpoints.regenerate-qr');
+    Route::get('checkpoints/{id}/download-qr', [OrganizerQrController::class, 'download'])->name('checkpoints.download-qr');
+    Route::get('checkpoints/{id}/print-qr', [OrganizerQrController::class, 'print'])->name('checkpoints.print-qr');
+    Route::get('checkpoints/{id}/qr', [OrganizerQrController::class, 'show'])->name('checkpoints.qr.show');
 
     Route::get('/placeholder/{action?}', [OrganizerDashboardController::class, 'placeholder'])->name('placeholder');
 });

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['event_id', 'name', 'location', 'description', 'sequence', 'points', 'status'])]
+#[Fillable(['event_id', 'name', 'location', 'description', 'sequence', 'points', 'status', 'qr_token'])]
 class Checkpoint extends Model
 {
     /** @use HasFactory<CheckpointFactory> */
