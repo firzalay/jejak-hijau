@@ -10,16 +10,19 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->foreignId('organizer_id')->constrained('users')->cascadeOnDelete();
             $table->string('name');
             $table->string('location');
-            $table->date('event_date');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->integer('total_checkpoints')->default(0);
             $table->boolean('is_active')->default(true);
-            $table->string('banner_image')->nullable();
+            $table->string('banner')->nullable();
             $table->text('description')->nullable();
             $table->string('total_rewards')->nullable();
             $table->integer('max_points')->default(500);
+            $table->integer('max_participants')->nullable();
+            $table->string('status')->default('draft');
             $table->timestamps();
         });
     }

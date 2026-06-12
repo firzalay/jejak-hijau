@@ -16,8 +16,9 @@ class EventController extends Controller
         $user = $request->user();
 
         $events = Event::where('is_active', true)
+            ->where('status', '!=', 'draft')
             ->withCount('participants')
-            ->orderBy('event_date')
+            ->orderBy('start_date')
             ->get();
 
         $joinedEventIds = $user->eventParticipants()
@@ -39,6 +40,7 @@ class EventController extends Controller
         $user = $request->user();
 
         $event = Event::where('is_active', true)
+            ->where('status', '!=', 'draft')
             ->withCount('participants')
             ->findOrFail($id);
 

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Event;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,16 +18,23 @@ class EventFactory extends Factory
      */
     public function definition(): array
     {
+        $startDate = fake()->dateTimeBetween('now', '+3 months');
+        $endDate = (clone $startDate)->modify('+'.fake()->numberBetween(0, 2).' days');
+
         return [
+            'organizer_id' => User::factory()->state(['role' => 'organizer']),
             'name' => $this->faker->words(3, true).' Run '.fake()->year(),
             'location' => fake()->city().', '.fake()->country(),
-            'event_date' => fake()->dateTimeBetween('now', '+3 months')->format('Y-m-d'),
+            'start_date' => $startDate->format('Y-m-d'),
+            'end_date' => $endDate->format('Y-m-d'),
             'total_checkpoints' => fake()->numberBetween(5, 10),
             'is_active' => true,
             'description' => 'Ini adalah event GreenRun untuk mendukung kelestarian alam dan lingkungan sekitar. Mari berlari dan kurangi emisi karbon!',
-            'banner_image' => 'https://images.unsplash.com/photo-1502224562085-639556652f33?auto=format&fit=crop&q=80&w=800',
+            'banner' => 'https://images.unsplash.com/photo-1502224562085-639556652f33?auto=format&fit=crop&q=80&w=800',
             'total_rewards' => 'Rp 10.000.000',
             'max_points' => 500,
+            'max_participants' => fake()->numberBetween(50, 200),
+            'status' => 'published',
         ];
     }
 
@@ -45,9 +53,16 @@ class EventFactory extends Factory
      */
     public function upcoming(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'event_date' => fake()->dateTimeBetween('+1 week', '+2 months')->format('Y-m-d'),
-        ]);
+        return $this->state(function (array $attributes) {
+            $startDate = fake()->dateTimeBetween('+1 week', '+2 months');
+            $endDate = (clone $startDate)->modify('+'.fake()->numberBetween(0, 2).' days');
+
+            return [
+                'start_date' => $startDate->format('Y-m-d'),
+                'end_date' => $endDate->format('Y-m-d'),
+                'status' => 'published',
+            ];
+        });
     }
 
     /**
@@ -55,9 +70,16 @@ class EventFactory extends Factory
      */
     public function ongoing(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'event_date' => now()->format('Y-m-d'),
-        ]);
+        return $this->state(function (array $attributes) {
+            $startDate = now();
+            $endDate = (clone $startDate)->modify('+'.fake()->numberBetween(0, 2).' days');
+
+            return [
+                'start_date' => $startDate->format('Y-m-d'),
+                'end_date' => $endDate->format('Y-m-d'),
+                'status' => 'ongoing',
+            ];
+        });
     }
 
     /**
@@ -65,8 +87,15 @@ class EventFactory extends Factory
      */
     public function finished(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'event_date' => fake()->dateTimeBetween('-2 months', '-1 week')->format('Y-m-d'),
-        ]);
+        return $this->state(function (array $attributes) {
+            $startDate = fake()->dateTimeBetween('-2 months', '-1 week');
+            $endDate = (clone $startDate)->modify('+'.fake()->numberBetween(0, 2).' days');
+
+            return [
+                'start_date' => $startDate->format('Y-m-d'),
+                'end_date' => $endDate->format('Y-m-d'),
+                'status' => 'finished',
+            ];
+        });
     }
 }

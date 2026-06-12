@@ -41,13 +41,13 @@ class OrganizerDashboardController extends Controller
         $events = $user->events()
             ->withCount('participants')
             ->withCount('checkpoints')
-            ->orderBy('event_date')
+            ->orderBy('start_date')
             ->get();
 
         // Active Event Performance (Ongoing event)
         $activeEvent = $user->events()
             ->where('is_active', true)
-            ->whereDate('event_date', '<=', now()->toDateString())
+            ->whereDate('start_date', '<=', now()->toDateString())
             ->first();
 
         // Fallback to any active event if no ongoing today
