@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('sequence');
             $table->integer('points')->default(50);
             $table->string('status')->default('active');
+            $table->string('qr_token')->nullable()->unique();
             $table->timestamps();
         });
     }

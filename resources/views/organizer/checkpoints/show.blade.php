@@ -56,11 +56,20 @@
         </div>
 
         @if(session('success'))
-            <div class="p-4 rounded-xl text-sm font-semibold text-emerald bg-emerald/10 border border-emerald/20 flex items-center gap-2">
+            <div class="p-4 rounded-xl text-sm font-semibold text-emerald bg-emerald/10 border border-emerald/20 flex items-center gap-2" style="color: #2ECF89;">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <span>{{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="p-4 rounded-xl text-sm font-semibold text-red-650 bg-red-55/10 border border-red-200 flex items-center gap-2" style="color: #DC2626;">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <span>{{ session('error') }}</span>
             </div>
         @endif
 
@@ -93,6 +102,55 @@
                 <div class="border-t border-gray-100 pt-4">
                     <span class="block text-xs text-gray-400 mb-1.5">Deskripsi / Petunjuk Checkpoint</span>
                     <p class="text-sm text-gray-650 leading-relaxed whitespace-pre-line" id="detail-description">{{ $checkpoint->description ?? 'Tidak ada deskripsi.' }}</p>
+                </div>
+
+                {{-- QR Code Section --}}
+                <div class="border-t border-gray-100 pt-6">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">QR Code Checkpoint</h4>
+                    @if($checkpoint->qr_token)
+                        <div class="flex flex-col sm:flex-row items-center gap-4 bg-gray-50/50 rounded-xl border border-gray-150 p-4">
+                            <div class="bg-white p-2 rounded-lg border border-gray-200 flex-shrink-0 shadow-sm">
+                                {!! \Linkxtr\QrCode\Facades\QrCode::format('svg')->size(120)->generate($checkpoint->qr_token) !!}
+                            </div>
+                            <div class="space-y-2.5 w-full text-center sm:text-left">
+                                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald/10 text-emerald" style="color: #2ECF89;">Generated</span>
+                                    <span class="text-xs font-mono bg-gray-200/50 border border-gray-300/50 px-2 py-0.5 rounded text-gray-650 max-w-[200px] truncate" title="{{ $checkpoint->qr_token }}">{{ $checkpoint->qr_token }}</span>
+                                </div>
+                                <p class="text-xs text-gray-500">Scan QR Code ini untuk mencatat kedatangan dan mendistribusikan poin kepada peserta.</p>
+                                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                                    <a href="{{ route('organizer.checkpoints.qr.show', $checkpoint->id) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all shadow-sm">
+                                        Lihat Preview →
+                                    </a>
+                                    <a href="{{ route('organizer.checkpoints.download-qr', $checkpoint->id) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-forest hover:bg-forest/90 transition-all shadow-sm" style="background-color: #003F2F;">
+                                        Unduh PNG/SVG
+                                    </a>
+                                    <a href="{{ route('organizer.checkpoints.print-qr', $checkpoint->id) }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all shadow-sm">
+                                        Cetak
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="rounded-xl border border-gray-150 p-4 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div>
+                                <p class="text-sm font-semibold text-gray-800">QR Code belum dibuat</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Sistem belum menghasilkan token pemindaian untuk checkpoint ini.</p>
+                            </div>
+                            @if(strtolower($checkpoint->status) === 'active')
+                                <form action="{{ route('organizer.checkpoints.generate-qr', $checkpoint->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold text-white bg-forest hover:bg-forest/90 transition-all shadow-sm" style="background-color: #003F2F;">
+                                        Generate QR Code
+                                    </button>
+                                </form>
+                            @else
+                                <div class="px-3 py-2 rounded-lg bg-yellow-50 border border-yellow-250 text-xs font-semibold text-yellow-800 max-w-[280px]">
+                                    QR Code hanya dapat dibuat untuk checkpoint dengan status <span class="font-bold">Active</span>.
+                                </div>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             </div>
 

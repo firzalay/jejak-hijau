@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Checkpoint;
 use App\Models\Event;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class CheckpointSeeder extends Seeder
 {
@@ -26,6 +27,7 @@ class CheckpointSeeder extends Seeder
                     'sequence' => $i,
                     'points' => 50,
                     'status' => $i === 4 ? 'inactive' : 'active',
+                    'qr_token' => $i <= 3 ? Str::uuid()->toString() : null,
                 ]);
             }
         }
