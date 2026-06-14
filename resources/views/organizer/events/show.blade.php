@@ -104,7 +104,7 @@
         </div>
 
         {{-- Metrics Dashboard Grid --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {{-- Total Participants --}}
             <div class="bg-white p-5 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 space-y-1">
                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Peserta</span>
@@ -115,12 +115,6 @@
             <div class="bg-white p-5 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 space-y-1">
                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Checkpoint</span>
                 <p class="text-3xl font-black text-gray-800" id="metric-checkpoints">{{ $event->checkpoints_count }}</p>
-            </div>
-
-            {{-- Checkpoint Completed Scans --}}
-            <div class="bg-white p-5 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 space-y-1">
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Scan</span>
-                <p class="text-3xl font-black text-gray-800" id="metric-scans">{{ $totalCheckpointsCompleted }}</p>
             </div>
 
             {{-- Total Points Distributed --}}
@@ -143,7 +137,7 @@
                     {{ $event->remaining_point_pool > 0 ? 'Available' : 'Exhausted' }}
                 </span>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {{-- Total Point Pool --}}
                 <div class="space-y-1">
                     <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Total Point Pool</span>
@@ -160,12 +154,6 @@
                 <div class="space-y-1">
                     <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Distributed Point</span>
                     <p class="text-2xl font-black text-forest" id="metric-distributed-pool" style="color: #003F2F;">{{ number_format($event->point_pool - $event->remaining_point_pool) }}</p>
-                </div>
-
-                {{-- Total Scan --}}
-                <div class="space-y-1">
-                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Total Scan</span>
-                    <p class="text-2xl font-black text-gray-800" id="metric-total-scans-pool">{{ number_format($totalCheckpointsCompleted) }}</p>
                 </div>
 
                 {{-- Average Point per Scan --}}

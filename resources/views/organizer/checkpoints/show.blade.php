@@ -74,111 +74,85 @@
         @endif
 
         {{-- Main Details Card --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {{-- Details Block --}}
-            <div class="md:col-span-2 bg-white rounded-2xl p-6 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 space-y-6">
-                <div>
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Informasi Checkpoint</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <span class="block text-xs text-gray-400">Nama Checkpoint</span>
-                            <span class="font-bold text-sm text-gray-800" id="detail-name">{{ $checkpoint->name }}</span>
-                        </div>
-                        <div>
-                            <span class="block text-xs text-gray-400">Detail Lokasi</span>
-                            <span class="font-semibold text-sm text-gray-750" id="detail-location">{{ $checkpoint->location ?? '-' }}</span>
-                        </div>
-                        <div class="mt-2">
-                            <span class="block text-xs text-gray-400">Urutan Checkpoint</span>
-                            <span class="font-bold text-sm text-gray-800" id="detail-sequence">#{{ $checkpoint->sequence }}</span>
-                        </div>
-                        <div class="mt-2">
-                            <span class="block text-xs text-gray-400">Poin Reward</span>
-                            <span class="font-bold text-emerald text-sm" id="detail-points" style="color: #2ECF89;">+{{ $checkpoint->points }} Poin</span>
-                        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 space-y-6">
+            <div>
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Informasi Checkpoint</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <span class="block text-xs text-gray-400">Nama Checkpoint</span>
+                        <span class="font-bold text-sm text-gray-800" id="detail-name">{{ $checkpoint->name }}</span>
                     </div>
-                </div>
-
-                <div class="border-t border-gray-100 pt-4">
-                    <span class="block text-xs text-gray-400 mb-1.5">Deskripsi / Petunjuk Checkpoint</span>
-                    <p class="text-sm text-gray-650 leading-relaxed whitespace-pre-line" id="detail-description">{{ $checkpoint->description ?? 'Tidak ada deskripsi.' }}</p>
-                </div>
-
-                {{-- QR Code Section --}}
-                <div class="border-t border-gray-100 pt-6">
-                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">QR Code Checkpoint</h4>
-                    @if($checkpoint->qr_token)
-                        <div class="flex flex-col sm:flex-row items-center gap-4 bg-gray-50/50 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
-                            <div class="bg-white p-2 rounded-lg border border-gray-200 flex-shrink-0 shadow-sm">
-                                {!! \Linkxtr\QrCode\Facades\QrCode::format('svg')->size(120)->generate($checkpoint->qr_token) !!}
-                            </div>
-                            <div class="space-y-2.5 w-full text-center sm:text-left">
-                                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald/10 text-emerald" style="color: #2ECF89;">Generated</span>
-                                    <span class="text-xs font-mono bg-gray-200/50 border border-gray-300/50 px-2 py-0.5 rounded text-gray-650 max-w-[200px] truncate" title="{{ $checkpoint->qr_token }}">{{ $checkpoint->qr_token }}</span>
-                                </div>
-                                <p class="text-xs text-gray-500">Scan QR Code ini untuk mencatat kedatangan dan mendistribusikan poin kepada peserta.</p>
-                                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                                    <a href="{{ route('organizer.checkpoints.qr.show', $checkpoint->id) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all shadow-sm">
-                                        Lihat Preview →
-                                    </a>
-                                    <a href="{{ route('organizer.checkpoints.download-qr', $checkpoint->id) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-forest hover:bg-forest/90 transition-all shadow-sm" style="background-color: #003F2F;">
-                                        Unduh PNG/SVG
-                                    </a>
-                                    <a href="{{ route('organizer.checkpoints.print-qr', $checkpoint->id) }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all shadow-sm">
-                                        Cetak
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    @else
-                        <div class="rounded-xl p-4 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-sm">
-                            <div>
-                                <p class="text-sm font-semibold text-gray-800">QR Code belum dibuat</p>
-                                <p class="text-xs text-gray-500 mt-0.5">Sistem belum menghasilkan token pemindaian untuk checkpoint ini.</p>
-                            </div>
-                            @if(strtolower($checkpoint->status) === 'active')
-                                <form action="{{ route('organizer.checkpoints.generate-qr', $checkpoint->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold text-white bg-forest hover:bg-forest/90 transition-all shadow-sm" style="background-color: #003F2F;">
-                                        Generate QR Code
-                                    </button>
-                                </form>
-                            @else
-                                <div class="px-3 py-2 rounded-lg bg-yellow-50 border border-yellow-250 text-xs font-semibold text-yellow-800 max-w-[280px]">
-                                    QR Code hanya dapat dibuat untuk checkpoint dengan status <span class="font-bold">Active</span>.
-                                </div>
-                            @endif
-                        </div>
-                    @endif
+                    <div>
+                        <span class="block text-xs text-gray-400">Detail Lokasi</span>
+                        <span class="font-semibold text-sm text-gray-750" id="detail-location">{{ $checkpoint->location ?? '-' }}</span>
+                    </div>
+                    <div class="mt-2">
+                        <span class="block text-xs text-gray-400">Urutan Checkpoint</span>
+                        <span class="font-bold text-sm text-gray-800" id="detail-sequence">#{{ $checkpoint->sequence }}</span>
+                    </div>
+                    <div class="mt-2">
+                        <span class="block text-xs text-gray-400">Poin Reward</span>
+                        <span class="font-bold text-emerald text-sm" id="detail-points" style="color: #2ECF89;">+{{ $checkpoint->points }} Poin</span>
+                    </div>
+                    <div class="mt-2 col-span-2 border-t border-gray-100 pt-3">
+                        <span class="block text-xs text-gray-400">Dibuat Pada</span>
+                        <span class="font-semibold text-sm text-gray-750" id="stat-created-at">{{ $checkpoint->created_at->translatedFormat('d F Y, H:i') }}</span>
+                    </div>
                 </div>
             </div>
 
-            {{-- Summary Stats Block (Dummy Statistics) --}}
-            <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between space-y-6">
-                <div>
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Statistik Checkpoint (Dummy)</h3>
-                    
-                    @php
-                        $dummyTotalScans = ($checkpoint->id * 23) % 113 + 45;
-                        $dummyParticipants = round($dummyTotalScans * 0.78);
-                    @endphp
-                    <div class="space-y-4">
-                        <div>
-                            <span class="block text-xs text-gray-400">Total Scan</span>
-                            <p class="text-2xl font-black text-gray-850" id="stat-scans">{{ $dummyTotalScans }} <span class="text-xs font-normal text-gray-400">pemindaian</span></p>
+            <div class="border-t border-gray-100 pt-4">
+                <span class="block text-xs text-gray-400 mb-1.5">Deskripsi / Petunjuk Checkpoint</span>
+                <p class="text-sm text-gray-650 leading-relaxed whitespace-pre-line" id="detail-description">{{ $checkpoint->description ?? 'Tidak ada deskripsi.' }}</p>
+            </div>
+
+            {{-- QR Code Section --}}
+            <div class="border-t border-gray-100 pt-6">
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">QR Code Checkpoint</h4>
+                @if($checkpoint->qr_token)
+                    <div class="flex flex-col sm:flex-row items-center gap-4 bg-gray-50/50 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                        <div class="bg-white p-2 rounded-lg border border-gray-200 flex-shrink-0 shadow-sm">
+                            {!! \Linkxtr\QrCode\Facades\QrCode::format('svg')->size(120)->generate($checkpoint->qr_token) !!}
                         </div>
-                        <div>
-                            <span class="block text-xs text-gray-400">Total Peserta yang Scan</span>
-                            <p class="text-2xl font-black text-gray-850" id="stat-participants">{{ $dummyParticipants }} <span class="text-xs font-normal text-gray-400">peserta unik</span></p>
+                        <div class="space-y-2.5 w-full text-center sm:text-left">
+                            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald/10 text-emerald" style="color: #2ECF89;">Generated</span>
+                                <span class="text-xs font-mono bg-gray-200/50 border border-gray-300/50 px-2 py-0.5 rounded text-gray-650 max-w-[200px] truncate" title="{{ $checkpoint->qr_token }}">{{ $checkpoint->qr_token }}</span>
+                            </div>
+                            <p class="text-xs text-gray-500">Scan QR Code ini untuk mencatat kedatangan dan mendistribusikan poin kepada peserta.</p>
+                            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                                <a href="{{ route('organizer.checkpoints.qr.show', $checkpoint->id) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all shadow-sm">
+                                    Lihat Preview →
+                                </a>
+                                <a href="{{ route('organizer.checkpoints.download-qr', $checkpoint->id) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-forest hover:bg-forest/90 transition-all shadow-sm" style="background-color: #003F2F;">
+                                    Unduh PNG/SVG
+                                </a>
+                                <a href="{{ route('organizer.checkpoints.print-qr', $checkpoint->id) }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all shadow-sm">
+                                    Cetak
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="border-t border-gray-100 pt-4 text-xs text-gray-400">
-                    <span>Dibuat pada:</span>
-                    <span class="font-bold text-gray-600 block mt-0.5" id="stat-created-at">{{ $checkpoint->created_at->translatedFormat('d F Y, H:i') }}</span>
-                </div>
+                @else
+                    <div class="rounded-xl p-4 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-sm">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800">QR Code belum dibuat</p>
+                            <p class="text-xs text-gray-500 mt-0.5">Sistem belum menghasilkan token pemindaian untuk checkpoint ini.</p>
+                        </div>
+                        @if(strtolower($checkpoint->status) === 'active')
+                            <form action="{{ route('organizer.checkpoints.generate-qr', $checkpoint->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold text-white bg-forest hover:bg-forest/90 transition-all shadow-sm" style="background-color: #003F2F;">
+                                    Generate QR Code
+                                </button>
+                            </form>
+                        @else
+                            <div class="px-3 py-2 rounded-lg bg-yellow-50 border border-yellow-250 text-xs font-semibold text-yellow-800 max-w-[280px]">
+                                QR Code hanya dapat dibuat untuk checkpoint dengan status <span class="font-bold">Active</span>.
+                            </div>
+                        @endif
+                    </div>
+                @endif
             </div>
         </div>
     </div>

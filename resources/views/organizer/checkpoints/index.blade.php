@@ -72,7 +72,6 @@
                 @foreach($checkpoints as $index => $checkpoint)
                     @php
                         $isActive = strtolower($checkpoint->status) === 'active';
-                        $dummyScans = ($checkpoint->id * 17) % 89 + 12;
                     @endphp
                     <div class="bg-white rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
                         <div class="flex items-start gap-4 min-w-0">
@@ -110,10 +109,6 @@
                                 <div>
                                     <span class="block text-[10px] uppercase font-bold tracking-wider text-gray-400 leading-none mb-1">Poin</span>
                                     <span class="font-bold text-gray-800">+{{ $checkpoint->points }} Pts</span>
-                                </div>
-                                <div>
-                                    <span class="block text-[10px] uppercase font-bold tracking-wider text-gray-400 leading-none mb-1">Total Scan</span>
-                                    <span class="font-semibold text-gray-700">{{ $dummyScans }} Scans</span>
                                 </div>
                             </div>
 

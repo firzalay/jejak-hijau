@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['event_id', 'name', 'location', 'description', 'sequence', 'points', 'status', 'qr_token'])]
 class Checkpoint extends Model
@@ -49,5 +50,13 @@ class Checkpoint extends Model
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
+    }
+
+    /**
+     * Get the scans for this checkpoint.
+     */
+    public function scans(): HasMany
+    {
+        return $this->hasMany(CheckpointScan::class);
     }
 }

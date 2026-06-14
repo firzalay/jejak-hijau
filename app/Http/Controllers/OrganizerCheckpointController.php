@@ -66,7 +66,7 @@ class OrganizerCheckpointController extends Controller
      */
     public function show(Request $request, int $id): View
     {
-        $checkpoint = Checkpoint::with('event')->findOrFail($id);
+        $checkpoint = Checkpoint::with('event')->withCount('scans')->findOrFail($id);
 
         if ($checkpoint->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');
