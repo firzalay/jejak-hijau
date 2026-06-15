@@ -13,11 +13,14 @@ class UpdateCheckpointRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $checkpoint = Checkpoint::with('event')->find($this->route('id'));
+        /** @var Checkpoint $checkpoint */
+        $checkpoint = $this->route('checkpoint');
 
         if (! $checkpoint) {
             return false;
         }
+
+        $checkpoint->loadMissing('event');
 
         return $checkpoint->event->organizer_id === $this->user()->id;
     }

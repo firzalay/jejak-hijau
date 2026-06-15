@@ -15,9 +15,9 @@ class QrController extends Controller
     /**
      * Show the QR Code detail and preview page.
      */
-    public function show(Request $request, int $id): View
+    public function show(Request $request, Checkpoint $checkpoint): View
     {
-        $checkpoint = Checkpoint::with('event')->findOrFail($id);
+        $checkpoint->loadMissing('event');
 
         if ($checkpoint->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');
@@ -34,9 +34,9 @@ class QrController extends Controller
     /**
      * Generate a new QR Code token for the checkpoint.
      */
-    public function generate(Request $request, int $id): RedirectResponse
+    public function generate(Request $request, Checkpoint $checkpoint): RedirectResponse
     {
-        $checkpoint = Checkpoint::with('event')->findOrFail($id);
+        $checkpoint->loadMissing('event');
 
         if ($checkpoint->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');
@@ -57,9 +57,9 @@ class QrController extends Controller
     /**
      * Regenerate the QR Code token, invalidating the old one.
      */
-    public function regenerate(Request $request, int $id): RedirectResponse
+    public function regenerate(Request $request, Checkpoint $checkpoint): RedirectResponse
     {
-        $checkpoint = Checkpoint::with('event')->findOrFail($id);
+        $checkpoint->loadMissing('event');
 
         if ($checkpoint->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');
@@ -80,9 +80,9 @@ class QrController extends Controller
     /**
      * Download the QR Code image (falls back to SVG if PNG fails).
      */
-    public function download(Request $request, int $id): mixed
+    public function download(Request $request, Checkpoint $checkpoint): mixed
     {
-        $checkpoint = Checkpoint::with('event')->findOrFail($id);
+        $checkpoint->loadMissing('event');
 
         if ($checkpoint->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');
@@ -114,9 +114,9 @@ class QrController extends Controller
     /**
      * Show printable layout of the QR Code.
      */
-    public function print(Request $request, int $id): View
+    public function print(Request $request, Checkpoint $checkpoint): View
     {
-        $checkpoint = Checkpoint::with('event')->findOrFail($id);
+        $checkpoint->loadMissing('event');
 
         if ($checkpoint->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');

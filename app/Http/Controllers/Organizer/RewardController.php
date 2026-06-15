@@ -73,9 +73,9 @@ class RewardController extends Controller
     /**
      * Display the specified reward.
      */
-    public function show(Request $request, int $id): View
+    public function show(Request $request, Reward $reward): View
     {
-        $reward = Reward::with('event')->findOrFail($id);
+        $reward->loadMissing('event');
 
         if ($reward->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');
@@ -87,9 +87,9 @@ class RewardController extends Controller
     /**
      * Show the form for editing the specified reward.
      */
-    public function edit(Request $request, int $id): View
+    public function edit(Request $request, Reward $reward): View
     {
-        $reward = Reward::with('event')->findOrFail($id);
+        $reward->loadMissing('event');
 
         if ($reward->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');
@@ -101,9 +101,9 @@ class RewardController extends Controller
     /**
      * Update the specified reward in storage.
      */
-    public function update(UpdateRewardRequest $request, int $id): RedirectResponse
+    public function update(UpdateRewardRequest $request, Reward $reward): RedirectResponse
     {
-        $reward = Reward::findOrFail($id);
+        $reward->loadMissing('event');
 
         if ($reward->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');
@@ -131,9 +131,9 @@ class RewardController extends Controller
     /**
      * Remove the specified reward from storage.
      */
-    public function destroy(Request $request, int $id): RedirectResponse
+    public function destroy(Request $request, Reward $reward): RedirectResponse
     {
-        $reward = Reward::findOrFail($id);
+        $reward->loadMissing('event');
 
         if ($reward->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');

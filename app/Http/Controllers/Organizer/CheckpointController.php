@@ -64,9 +64,9 @@ class CheckpointController extends Controller
     /**
      * Display the specified checkpoint.
      */
-    public function show(Request $request, int $id): View
+    public function show(Request $request, Checkpoint $checkpoint): View
     {
-        $checkpoint = Checkpoint::with('event')->withCount('scans')->findOrFail($id);
+        $checkpoint->loadMissing('event')->loadCount('scans');
 
         if ($checkpoint->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');
@@ -78,9 +78,9 @@ class CheckpointController extends Controller
     /**
      * Show the form for editing the specified checkpoint.
      */
-    public function edit(Request $request, int $id): View
+    public function edit(Request $request, Checkpoint $checkpoint): View
     {
-        $checkpoint = Checkpoint::with('event')->findOrFail($id);
+        $checkpoint->loadMissing('event');
 
         if ($checkpoint->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');
@@ -92,9 +92,9 @@ class CheckpointController extends Controller
     /**
      * Update the specified checkpoint in storage.
      */
-    public function update(UpdateCheckpointRequest $request, int $id): RedirectResponse
+    public function update(UpdateCheckpointRequest $request, Checkpoint $checkpoint): RedirectResponse
     {
-        $checkpoint = Checkpoint::findOrFail($id);
+        $checkpoint->load('event');
 
         if ($checkpoint->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');
@@ -109,9 +109,9 @@ class CheckpointController extends Controller
     /**
      * Remove the specified checkpoint from storage.
      */
-    public function destroy(Request $request, int $id): RedirectResponse
+    public function destroy(Request $request, Checkpoint $checkpoint): RedirectResponse
     {
-        $checkpoint = Checkpoint::findOrFail($id);
+        $checkpoint->load('event');
 
         if ($checkpoint->event->organizer_id !== $request->user()->id) {
             abort(403, 'Unauthorized action.');

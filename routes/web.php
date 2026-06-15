@@ -92,30 +92,16 @@ Route::middleware(['auth', 'role:organizer', 'organizer.approved'])->prefix('org
     Route::resource('events', OrganizerEventController::class);
     Route::post('events/{id}/regenerate-code', [OrganizerEventController::class, 'regenerateCode'])->name('events.regenerate-code');
 
-    // Checkpoints resourceful routes
-    Route::get('events/{event}/checkpoints', [OrganizerCheckpointController::class, 'index'])->name('events.checkpoints.index');
-    Route::get('events/{event}/checkpoints/create', [OrganizerCheckpointController::class, 'create'])->name('events.checkpoints.create');
-    Route::post('events/{event}/checkpoints', [OrganizerCheckpointController::class, 'store'])->name('events.checkpoints.store');
-    Route::get('checkpoints/{id}', [OrganizerCheckpointController::class, 'show'])->name('checkpoints.show');
-    Route::get('checkpoints/{id}/edit', [OrganizerCheckpointController::class, 'edit'])->name('checkpoints.edit');
-    Route::put('checkpoints/{id}', [OrganizerCheckpointController::class, 'update'])->name('checkpoints.update');
-    Route::delete('checkpoints/{id}', [OrganizerCheckpointController::class, 'destroy'])->name('checkpoints.destroy');
+    Route::resource('events.checkpoints', OrganizerCheckpointController::class)->shallow();
 
-    // Rewards resourceful routes
-    Route::get('events/{event}/rewards', [OrganizerRewardController::class, 'index'])->name('events.rewards.index');
-    Route::get('events/{event}/rewards/create', [OrganizerRewardController::class, 'create'])->name('events.rewards.create');
-    Route::post('events/{event}/rewards', [OrganizerRewardController::class, 'store'])->name('events.rewards.store');
-    Route::get('rewards/{id}', [OrganizerRewardController::class, 'show'])->name('rewards.show');
-    Route::get('rewards/{id}/edit', [OrganizerRewardController::class, 'edit'])->name('rewards.edit');
-    Route::put('rewards/{id}', [OrganizerRewardController::class, 'update'])->name('rewards.update');
-    Route::delete('rewards/{id}', [OrganizerRewardController::class, 'destroy'])->name('rewards.destroy');
+    Route::resource('events.rewards', OrganizerRewardController::class)->shallow();
 
     // QR Code Management routes
-    Route::post('checkpoints/{id}/generate-qr', [OrganizerQrController::class, 'generate'])->name('checkpoints.generate-qr');
-    Route::post('checkpoints/{id}/regenerate-qr', [OrganizerQrController::class, 'regenerate'])->name('checkpoints.regenerate-qr');
-    Route::get('checkpoints/{id}/download-qr', [OrganizerQrController::class, 'download'])->name('checkpoints.download-qr');
-    Route::get('checkpoints/{id}/print-qr', [OrganizerQrController::class, 'print'])->name('checkpoints.print-qr');
-    Route::get('checkpoints/{id}/qr', [OrganizerQrController::class, 'show'])->name('checkpoints.qr.show');
+    Route::post('checkpoints/{checkpoint}/generate-qr', [OrganizerQrController::class, 'generate'])->name('checkpoints.generate-qr');
+    Route::post('checkpoints/{checkpoint}/regenerate-qr', [OrganizerQrController::class, 'regenerate'])->name('checkpoints.regenerate-qr');
+    Route::get('checkpoints/{checkpoint}/download-qr', [OrganizerQrController::class, 'download'])->name('checkpoints.download-qr');
+    Route::get('checkpoints/{checkpoint}/print-qr', [OrganizerQrController::class, 'print'])->name('checkpoints.print-qr');
+    Route::get('checkpoints/{checkpoint}/qr', [OrganizerQrController::class, 'show'])->name('checkpoints.qr.show');
 
     Route::get('/placeholder/{action?}', [OrganizerDashboardController::class, 'placeholder'])->name('placeholder');
 

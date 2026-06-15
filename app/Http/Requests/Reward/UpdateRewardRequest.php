@@ -13,11 +13,14 @@ class UpdateRewardRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $reward = Reward::with('event')->find($this->route('id'));
+        /** @var Reward $reward */
+        $reward = $this->route('reward');
 
         if (! $reward) {
             return false;
         }
+
+        $reward->loadMissing('event');
 
         return $reward->event->organizer_id === $this->user()->id;
     }
